@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UnderStrap functions and definitions
  *
@@ -6,7 +7,7 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 // UnderStrap's includes directory.
 $understrap_inc_dir = 'inc';
@@ -30,16 +31,31 @@ $understrap_includes = array(
 );
 
 // Load WooCommerce functions if WooCommerce is activated.
-if ( class_exists( 'WooCommerce' ) ) {
+if (class_exists('WooCommerce')) {
 	$understrap_includes[] = '/woocommerce.php';
 }
 
 // Load Jetpack compatibility file if Jetpack is activiated.
-if ( class_exists( 'Jetpack' ) ) {
+if (class_exists('Jetpack')) {
 	$understrap_includes[] = '/jetpack.php';
 }
 
 // Include files.
-foreach ( $understrap_includes as $file ) {
-	require_once get_theme_file_path( $understrap_inc_dir . $file );
+foreach ($understrap_includes as $file) {
+	require_once get_theme_file_path($understrap_inc_dir . $file);
+}
+
+use Carbon_Fields\Container;
+use Carbon_Fields\Field;
+
+add_action('carbon_fields_register_fields', 'crb_attach_theme_options');
+function crb_attach_theme_options()
+{
+	Container::make('theme_options', __('Theme Options'))
+		->add_fields(array(
+			Field::make('text', 'text_main', 'Текст на главной')
+			->set_width(50)
+			->help_text('Введите текст для отображения на странице'),
+			Field::make('image', 'image_main', __('Image'))->set_width(50),
+		));
 }
